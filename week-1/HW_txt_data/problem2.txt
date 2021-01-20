@@ -1,9 +1,3 @@
-### No importing other modules. You should are able to implment this
-### problem using the built-in operators. 
-
-### DEFINE CacheInfo Class
-
-
 def lru_cache(func, maxsize=128):
     '''
     This function is a function wrapper, and the returned function object should:
