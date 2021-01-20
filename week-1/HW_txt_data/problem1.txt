@@ -1,0 +1,39 @@
+### No importing other modules. You should are able to implment this
+### problem using the built-in operators. 
+
+### DEFINE CacheInfo Class
+
+
+def lru_cache(func, maxsize=128):
+    def cache_func(): 
+        return 
+    def cache_info():
+        return CacheInfo(0, 0, maxsize,0)    
+
+    cache_func.cache_info = cache_info
+
+    return cache_func
+
+
+class CacheInfo:
+    def __init__(self, hits, misses, max_size, curr_size):
+        self.hits = hits
+        self.misses = misses
+        self.max_size = max_size
+        self.curr_size = curr_size
+    def __repr__(self):
+        return f'CacheInfo(hits={self.hits}, misses={self.misses}, \
+max_size={self.max_size}, curr_size={self.curr_size})'
+    
+
+
+def square(num):
+    return num * num
+
+
+def sum(a, b, c):
+    return a + b + c
+
+if __name__ == "__main__":
+    squareC = lru_cache(square, 4)
+    print(squareC.cache_info())

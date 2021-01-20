@@ -1,0 +1,94 @@
+### No importing other modules. You should are able to implment this
+### problem using the built-in operators. 
+
+### DEFINE CacheInfo Class
+
+
+def lru_cache(func, maxsize=128):
+    '''
+    This function is a function wrapper, and the returned function object should:
+    
+        1.Call the wrapped function (func) with its arbitrary arguments.
+        2.Maintain an LRU cache called cache.
+    
+    Inputs:
+        func(function): a function wrapped by the lru_cache function.
+        maxsize(int): the number of the most recent calls that the 
+        function wrapper stores.
+
+    Output:
+        cache_func(function): a inner function in which the wrapped fucntion 
+        could be called.
+    '''
+    cache = []
+    cache_info = CacheInfo(0, 0, maxsize,0)
+    def cache_func(*args, **kwargs): 
+        '''
+        This function takes the arguments, calls the wrapped function with its 
+        arguments, and stores function results for the N most recent calls(N = maxsize).
+
+        Inputs:
+            *args(tuple): arbitrary arguments packed as a tuple.
+            **kwargs(dictionary): arbitrary arguments packed as a dictionary.
+
+        Output:
+            the function result of the called function with corresponding arguments.
+        '''
+        entry = [args, list(kwargs.items()), func(*args, **kwargs)]
+        if entry not in cache:
+            cache_func.misses += 1
+            if len(cache) < maxsize:
+                cache.append(entry)
+            else:
+                cache.remove(cache[0])
+                cache.append(entry)
+        else:
+            cache_func.hits += 1
+            cache.remove(entry)
+            cache.append(entry)
+        cache_func.curr_size = len(cache)
+
+        nonlocal cache_info
+        cache_info = CacheInfo(cache_func.hits, cache_func.misses, \
+        cache_func.max_size, cache_func.curr_size)   
+
+        return func(*args, **kwargs)
+    def get_info():
+        '''
+        This function returns the cache_info variable which holds the 
+        current state (i.e., CacheInfo object) of the cache.
+        '''
+        return cache_info    
+
+    cache_func.hits = 0
+    cache_func.misses = 0
+    cache_func.max_size = maxsize  
+    cache_func.curr_size = len(cache)
+    cache_func.get_info = get_info
+
+    return cache_func
+
+
+class CacheInfo:
+    '''
+    This class stores the information of the cache in its attributes.
+    '''
+    def __init__(self, hits, misses, max_size, curr_size):
+        '''
+        This method takes in four attributes of the cache and defines
+        them as class attributes.
+        '''
+        self.hits = hits
+        self.misses = misses
+        self.max_size = max_size
+        self.curr_size = curr_size
+    def __repr__(self):
+        '''
+        This method is added to ensure string representation
+        of the class.
+        '''
+        return f'CacheInfo(hits={self.hits}, misses={self.misses}, \
+max_size={self.max_size}, curr_size={self.curr_size})'
+    
+
+
